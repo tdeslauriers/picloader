@@ -26,13 +26,13 @@ func CreateImage(pic model.Pic) (id int64, errSQL error) {
 	db := util.DBConn()
 	defer db.Close()
 
-	query := "INSERT INTO image (filename, date) VALUES (UUID_TO_BIN(?), ?);"
+	query := "INSERT INTO image (filename, date, album_id) VALUES (UUID_TO_BIN(?), ?, ?);"
 	stmt, err := db.Prepare(query)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	r, errSQL := stmt.Exec(pic.Filename, pic.Date)
+	r, errSQL := stmt.Exec(pic.Filename, pic.Date, pic.AlbumID)
 	if errSQL != nil {
 		log.Fatal(errSQL)
 	}

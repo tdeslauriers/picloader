@@ -5,8 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/google/uuid"
+	"github.com/picloader/dao"
 	"github.com/picloader/model"
 	"github.com/picloader/util"
 	"github.com/rwcarlsen/goexif/exif"
@@ -40,8 +42,12 @@ func main() {
 		}
 
 		tm, _ := x.DateTime()
+		year := strconv.Itoa(tm.Year())
 
 		pic := model.Pic{Filename: uuid.New(), Date: tm}
+		pic.AlbumID = dao.ObtainAlbumID(year)
+		fmt.Println(pic)
+
 		imgs = append(imgs, pic)
 
 		tmb, _ := x.JpegThumbnail()
@@ -52,6 +58,9 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
+		// need to add record to db after rename successful.
+		dao.CreateImage(pic)
 	}
 
 }
