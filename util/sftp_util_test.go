@@ -8,7 +8,7 @@ func TestSftpConnect(t *testing.T) {
 
 	t.Log("Don't log secrets.  Don't do it.\n")
 
-	client, err := sftpConnect()
+	client, err := SftpConnect()
 	check(err)
 	defer client.Close()
 

@@ -17,7 +17,7 @@ var (
 	privKey = os.Getenv("GALLERY_VM_PUBLIC_GO_PRIVKEY_ADDR")
 )
 
-func sftpConnect() (*sftp.Client, error) {
+func SftpConnect() (*sftp.Client, error) {
 
 	priv, err := ioutil.ReadFile(privKey)
 	check(err)
