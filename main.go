@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -18,19 +17,18 @@ import (
 
 func main() {
 
-	fmt.Println("Atomic dog...")
-
 	dir := "/home/tombomb/Pictures/test/source/"
-	thumbdir := "/home/tombomb/Pictures/test/thumbs/"
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// rename images, create thumbnails, and create db entries
 	// need to test for nil
 	imgs := make(model.Pics, 0, 100)
 	for _, f := range files {
 
+		// read in data
 		p, err := os.Open(dir + f.Name())
 		if err != nil {
 			log.Panicf("Could not open file: %s.\n%v", f.Name(), err)
@@ -41,26 +39,28 @@ func main() {
 			log.Panicf("Could not decode image: %s.\n%v", f.Name(), err)
 		}
 
-		tm, _ := x.DateTime()
-		year := strconv.Itoa(tm.Year())
+		// data model
+		date, _ := x.DateTime()
+		year := strconv.Itoa(date.Year())
 
-		pic := model.Pic{Filename: uuid.New(), Date: tm}
+		pic := model.Pic{Filename: uuid.New(), Date: date, Published: false}
 		pic.AlbumID = dao.ObtainAlbumID(year)
-		fmt.Println(pic)
-
 		imgs = append(imgs, pic)
 
-		tmb, _ := x.JpegThumbnail()
-		thumb := thumbdir + pic.Filename.String() + "_thumb.jpg"
-		util.MakeThumb(tmb, thumb)
-
+		// rename files
 		err = os.Rename(dir+f.Name(), dir+pic.Filename.String()+".jpg")
 		if err != nil {
 			panic(err)
 		}
 
-		// need to add record to db after rename successful.
+		tmb, _ := x.JpegThumbnail()
+		thumb := dir + pic.Filename.String() + "_thumb.jpg"
+		util.MakeThumb(tmb, thumb)
+
+		// DAO: only add record to db after rename successful.
 		dao.CreateImage(pic)
 	}
+
+	//scp images to new web directory
 
 }

@@ -7,10 +7,12 @@ import (
 	"os"
 )
 
-var user = os.Getenv("GALLERY_TESTDB_GO_USER")
-var pass = os.Getenv("GALLERY_TESTDB_GO_PASSWORD")
-var dbIP = os.Getenv("GALLERY_TESTDB_GO_IP")
-var name = os.Getenv("GALLERY_TESTDB_GO_DBNAME")
+var (
+	user = os.Getenv("GALLERY_TESTDB_GO_USER")
+	pass = os.Getenv("GALLERY_TESTDB_GO_PASSWORD")
+	dbIP = os.Getenv("GALLERY_TESTDB_GO_IP")
+	name = os.Getenv("GALLERY_TESTDB_GO_DBNAME")
+)
 
 var url = fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", user, pass, dbIP, name)
 
