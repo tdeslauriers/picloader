@@ -1,4 +1,4 @@
-module github.com/picloader
+module github.com/tdeslauriers/picloader
 
 go 1.15
 
